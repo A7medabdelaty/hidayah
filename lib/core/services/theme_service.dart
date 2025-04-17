@@ -8,22 +8,24 @@ class AppTheme {
   static ThemeData get lightTheme {
     return ThemeData(
       brightness: Brightness.light,
-      primaryColor: AppColor.primaryColor,
-      scaffoldBackgroundColor: AppColor.backgroundColor,
+      primaryColor: AppColors.primaryColor,
+      scaffoldBackgroundColor: AppColors.backgroundColor,
       fontFamily: 'Nunito',
       colorScheme: ColorScheme(
-        primary: AppColor.primaryColor, // اللون الثاني
-        secondary: Colors.green, // اللون الثانوي الثاني
-        surface: Colors.white, // خلفية التطبيقات
+        primary: AppColors.primaryColor, // اللون الثاني
+        secondary: AppColors.lightGreenColor, // اللون الثانوي الثاني
+        surface: AppColors.superLightGreenColor, // خلفية التطبيقات
         error: Colors.red, // اللون الخاص بالأخطاء
         onPrimary: Colors.white, // اللون عند استخدام الـ primary
         onSecondary: Colors.black, // اللون عند استخدام الـ secondary
-        onSurface: AppColor.grayColor, // اللون عند استخدام الـ background
+        onSurface: AppColors.grayColor, // اللون عند استخدام الـ background
         onError: Colors.white, // اللون عند استخدام الـ error
         brightness: Brightness.light, // مستوى السطوع (فاتح أو غامق)
       ),
-      appBarTheme: const AppBarTheme(
-        elevation: 0,
+      appBarTheme: AppBarTheme(
+        elevation: 2,
+        shadowColor: AppColors.black,
+        foregroundColor: AppColors.white,
         centerTitle: true,
         backgroundColor: Colors.white,
         iconTheme: IconThemeData(color: Colors.black),
@@ -34,16 +36,16 @@ class AppTheme {
         ),
       ),
       textTheme: TextTheme(
-        displayLarge: textStyle(24.sp, FontWeight.bold, AppColor.black),
-        displayMedium: textStyle(20.sp, FontWeight.bold, AppColor.black),
-        displaySmall: textStyle(18.sp, FontWeight.w600, AppColor.black),
-        headlineMedium: textStyle(16.sp, FontWeight.bold, AppColor.black),
-        bodyLarge: textStyle(14.sp, FontWeight.normal, AppColor.black),
-        bodyMedium: textStyle(12.sp, FontWeight.normal, AppColor.black),
+        displayLarge: textStyle(24.sp, FontWeight.bold, AppColors.black),
+        displayMedium: textStyle(20.sp, FontWeight.bold, AppColors.black),
+        displaySmall: textStyle(18.sp, FontWeight.w600, AppColors.black),
+        headlineMedium: textStyle(16.sp, FontWeight.bold, AppColors.black),
+        bodyLarge: textStyle(14.sp, FontWeight.normal, AppColors.black),
+        bodyMedium: textStyle(12.sp, FontWeight.normal, AppColors.black),
       ),
-      cardColor: AppColor.primaryColor,
+      cardColor: AppColors.primaryColor,
       buttonTheme: ButtonThemeData(
-        buttonColor: AppColor.backgroundColor,
+        buttonColor: AppColors.backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -51,7 +53,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: AppColor.primaryColor,
+          backgroundColor: AppColors.primaryColor,
           textStyle: textStyle(16, FontWeight.bold, Colors.white),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -66,8 +68,8 @@ class AppTheme {
   static ThemeData get darkTheme {
     return ThemeData(
       brightness: Brightness.dark,
-      primaryColor: AppColor.primaryColor,
-      scaffoldBackgroundColor: AppColor.darkBackgroundColor,
+      primaryColor: AppColors.primaryColor,
+      scaffoldBackgroundColor: AppColors.darkBackgroundColor,
       fontFamily: 'Nunito',
       appBarTheme: const AppBarTheme(
         elevation: 0,
@@ -90,7 +92,7 @@ class AppTheme {
       ),
       cardColor: Colors.grey[900],
       buttonTheme: ButtonThemeData(
-        buttonColor: AppColor.primaryColor,
+        buttonColor: AppColors.primaryColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
         ),
@@ -98,7 +100,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
-          backgroundColor: AppColor.primaryColor,
+          backgroundColor: AppColors.primaryColor,
           textStyle: textStyle(16, FontWeight.bold, Colors.white),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),

@@ -1,4 +1,4 @@
-import 'package:hidayah/features/prayer_time/data/prayer_times_model.dart';
+import 'package:hidayah/features/prayer_time/data/models/prayer_times_model.dart';
 
 abstract class PrayerTimesStates {}
 
@@ -6,14 +6,14 @@ class PrayerTimesInitial extends PrayerTimesStates {}
 
 class PrayerTimesLoading extends PrayerTimesStates {}
 
-class PrayerTimesSucess extends PrayerTimesStates {
+class PrayerTimesSuccess extends PrayerTimesStates {
   final PrayerTimesModel prayerTimesModel;
 
-  PrayerTimesSucess(this.prayerTimesModel);
+  PrayerTimesSuccess(this.prayerTimesModel);
 }
 
 class PrayerTimesError extends PrayerTimesStates {
-  final String errmessage;
+  final String errMessage;
 
-  PrayerTimesError(this.errmessage);
+  PrayerTimesError(this.errMessage);
 }

@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hidayah/core/services/service_loctor.dart';
 
 import 'app.dart';
 import 'app_bloc_observer.dart';
@@ -12,6 +13,7 @@ import 'core/utils/app_shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setupServiceLocator();
   await EasyLocalization.ensureInitialized();
   Bloc.observer = AppBlocObserver();
   await AppPreferences().init();

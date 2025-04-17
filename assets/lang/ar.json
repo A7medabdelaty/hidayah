@@ -1,3 +1,6 @@
 {
-  "appName": "تطبيقي"
+  "appName": "هداية",
+  "prayerTimes": "مواقيت الصلاة",
+  "prayerTimesDesc": "ابق على اتصال مع صلواتك اليومية",
+  "viewQiblaDirection": "حدد إتجاه القبلة"
 }

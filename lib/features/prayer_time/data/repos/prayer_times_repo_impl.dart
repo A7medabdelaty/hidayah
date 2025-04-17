@@ -4,7 +4,7 @@ import 'package:hidayah/core/constants/endpoint_constants.dart';
 import 'package:hidayah/core/errors/api_failures.dart';
 import 'package:hidayah/core/errors/failures.dart';
 import 'package:hidayah/core/network/api_consumer.dart';
-import 'package:hidayah/features/prayer_time/data/prayer_times_model.dart';
+import 'package:hidayah/features/prayer_time/data/models/prayer_times_model.dart';
 import 'package:hidayah/features/prayer_time/data/repos/preayer_times_repo.dart';
 import 'package:intl/intl.dart';
 

@@ -18,6 +18,7 @@ dependencies:
   cached_network_image:
   flutter_screenutil:
   dartz:
+  lucide_icons: ^0.257.0
 
 dev_dependencies:
   flutter_test:
