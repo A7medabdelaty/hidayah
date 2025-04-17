@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:hidayah/core/constants/image_manager.dart';
 
 import '../../../../core/extensions/navigation_extensions.dart';
 import '../../../../core/routing/routes.dart';
 
 class SplashScreen extends StatefulWidget {
+  static const String routeName = '/splashScreen';
   const SplashScreen({super.key});
 
   @override
@@ -16,24 +18,15 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), () {
-      context.pushNamed(Routes.onBoardingScreen);
+    Timer(const Duration(milliseconds: 1200), () {
+      context.pushNamed(Routes.homeScreen);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FlutterLogo(size: 100),
-            SizedBox(height: 20),
-            Text("Splash Screen", style: TextStyle(fontSize: 20)),
-          ],
-        ),
-      ),
+    return Scaffold(
+      body: Center(child: Image.asset(ImageManager.appLogo)),
     );
   }
 }

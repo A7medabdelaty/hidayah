@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../theme/app_colors.dart';
+import '../constants/app_colors.dart';
 
 class AppTheme {
   // 🌓 الوضع الفاتح
@@ -67,7 +67,7 @@ class AppTheme {
     return ThemeData(
       brightness: Brightness.dark,
       primaryColor: AppColor.primaryColor,
-      scaffoldBackgroundColor: AppColor.backgroundColor,
+      scaffoldBackgroundColor: AppColor.darkBackgroundColor,
       fontFamily: 'Nunito',
       appBarTheme: const AppBarTheme(
         elevation: 0,

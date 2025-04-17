@@ -20,20 +20,11 @@ class DioConsumer implements ApiConsumer {
   @override
   Future<dynamic> get(String path,
       {Map<String, dynamic>? queryParameters}) async {
-    try {
-      final response = await client.get(path, queryParameters: queryParameters);
-      return response.data;
-    } on DioException catch (error) {
-      _handleDioError(error);
-    }
+    final response = await client.get(path, queryParameters: queryParameters);
+    return response.data;
   }
 
   // Implement other methods (post, put, delete)
-
-  void _handleDioError(DioException error) {
-    // Handle different error types
-  }
-
   @override
   Future delete(String path) {
     // TODO: implement delete

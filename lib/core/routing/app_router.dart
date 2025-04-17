@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hidayah/features/home/presentation/view/home_view.dart';
 
-import '../../features/onboarding/presentation/screens/onboarding_screen.dart';
 import '../../features/splash/presentation/screens/splash_screen.dart';
 import '../routing/routes.dart';
 
@@ -9,8 +9,8 @@ class AppRouter {
     switch (settings.name) {
       case Routes.splashScreen:
         return _createRoute(const SplashScreen());
-      case Routes.onBoardingScreen:
-        return _createRoute(const OnboardingScreen());
+      case Routes.homeScreen:
+        return _createRoute(const HomeView());
       default:
         return null;
     }
