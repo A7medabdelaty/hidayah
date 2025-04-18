@@ -13,7 +13,7 @@ class AppTheme {
       fontFamily: 'Nunito',
       colorScheme: ColorScheme(
         primary: AppColors.primaryColor, // اللون الثاني
-        secondary: AppColors.lightGreenColor, // اللون الثانوي الثاني
+        secondary: AppColors.foregroundColor, // اللون الثانوي الثاني
         surface: AppColors.superLightGreenColor, // خلفية التطبيقات
         error: Colors.red, // اللون الخاص بالأخطاء
         onPrimary: Colors.white, // اللون عند استخدام الـ primary

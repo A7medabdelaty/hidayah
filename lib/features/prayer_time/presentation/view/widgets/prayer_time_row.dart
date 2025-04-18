@@ -22,7 +22,7 @@ class PrayerTimeRow extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: index % 2 == 0
-          ? AppColors.lightGreenColor
+          ? AppColors.foregroundColor
           : AppColors.superLightGreenColor,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
@@ -31,17 +31,6 @@ class PrayerTimeRow extends StatelessWidget {
             Icon(icon, size: 20, color: Colors.grey.shade600),
             const SizedBox(width: 12),
             Text(label, style: const TextStyle(fontSize: 16)),
-            if (isNext)
-              Container(
-                margin: const EdgeInsets.only(left: 8),
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.green.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Text("NEXT",
-                    style: TextStyle(fontSize: 10, color: Colors.green)),
-              ),
             const Spacer(),
             Text(time, style: const TextStyle(fontWeight: FontWeight.bold))
           ],

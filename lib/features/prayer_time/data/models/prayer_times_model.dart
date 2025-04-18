@@ -80,6 +80,22 @@ class Timings {
       lastthird: json['Lastthird'],
     );
   }
+
+  Map<String, String> toJson() {
+    return {
+      'Fajr': fajr,
+      'Sunrise': sunrise,
+      'Dhuhr': dhuhr,
+      'Asr': asr,
+      'Sunset': sunset,
+      'Maghrib': maghrib,
+      'Isha': isha,
+      'Imsak': imsak,
+      'Midnight': midnight,
+      'Firstthird': firstthird,
+      'Lastthird': lastthird,
+    };
+  }
 }
 
 class Date {
