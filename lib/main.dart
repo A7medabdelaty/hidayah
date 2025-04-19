@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hidayah/core/services/locale_service.dart';
 import 'package:hidayah/core/services/service_loctor.dart';
 
 import 'app.dart';
@@ -18,10 +19,19 @@ void main() async {
   Bloc.observer = AppBlocObserver();
   await AppPreferences().init();
 
+  // Get the device's language code (e.g. 'en' from 'en_US')
+  final String deviceLocale = LocaleService().getCurrentLocale().languageCode;
+
+  // Check if the device language is in our supported locales
+  final bool isSupported = AppConstants.supportedLocales
+      .map((locale) => locale.languageCode)
+      .contains(deviceLocale);
+
   runApp(EasyLocalization(
     supportedLocales: AppConstants.supportedLocales,
     path: 'assets/lang',
     fallbackLocale: const Locale('en'),
+    startLocale: isSupported ? Locale(deviceLocale) : const Locale('en'),
     child: MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => LocaleCubit()),

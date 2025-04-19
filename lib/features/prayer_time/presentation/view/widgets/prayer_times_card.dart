@@ -1,4 +1,5 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:easy_localization/easy_localization.dart'
+    show StringTranslateExtension;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hidayah/core/constants/app_colors.dart';
@@ -37,7 +38,7 @@ class PrayerTimesCard extends StatelessWidget {
                 PrayerLocationHeader(),
                 SizedBox(height: 8.sp),
                 Text(
-                  "${date.hijri.day} ${appLocale == 'ar' ? date.hijri.month.ar : date.hijri.month.en} ${date.hijri.year} | ${appLocale == 'ar' ? date.hijri.weekday.ar : date.gregorian.weekday.en}, ${date.readable}",
+                  "${date.hijri.day} ${appLocale == 'ar' ? date.hijri.month.ar : date.hijri.month.en} ${date.hijri.year} | ${appLocale == 'ar' ? date.hijri.weekday.ar : date.gregorian.weekday.en} | \u202A${date.readable}\u202C",
                   style: TextStyle(color: Colors.white70, fontSize: 12.sp),
                 ),
                 SizedBox(height: 14.sp),
@@ -47,7 +48,11 @@ class PrayerTimesCard extends StatelessWidget {
           ),
           PrayerTimesList(prayerTimesModel: prayerTimesModel),
           Container(
-            color: AppColors.foregroundColor,
+            decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(16),
+                    bottomRight: Radius.circular(16))),
             child: TextButton(
               onPressed: () {},
               child: Text(
@@ -60,8 +65,8 @@ class PrayerTimesCard extends StatelessWidget {
           TextButton.icon(
             onPressed: () {},
             icon: const Icon(Icons.location_on_outlined, color: Colors.green),
-            label: const Text(
-              "Change Location",
+            label: Text(
+              "changeLocation".tr(),
               style: TextStyle(color: Colors.green),
             ),
           ),

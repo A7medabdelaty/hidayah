@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hidayah/core/constants/app_colors.dart';
+import 'package:hidayah/core/services/locale_service.dart';
+import 'package:hidayah/core/utils/prayer_time_calculator.dart';
 import 'package:hidayah/features/prayer_time/data/models/prayer_times_model.dart';
-import 'package:hidayah/features/prayer_time/utils/prayer_time_calculator.dart';
 
 class NextPrayerIndicator extends StatefulWidget {
   final PrayerTimesModel prayerTimesModel;
@@ -19,6 +21,7 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
   late Timer _timer;
   late var nextPrayer = PrayerTimeCalculator.getNextPrayer(
     widget.prayerTimesModel.data.timings.toJson(),
+    locale: LocaleService().getCurrentLocale().languageCode,
   );
 
   @override
@@ -44,6 +47,7 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
     setState(() {
       nextPrayer = PrayerTimeCalculator.getNextPrayer(
         widget.prayerTimesModel.data.timings.toJson(),
+        locale: LocaleService().getCurrentLocale().languageCode,
       );
     });
   }
@@ -66,7 +70,7 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
                 Icon(Icons.access_time, color: AppColors.white),
                 SizedBox(width: 8.w),
                 Text(
-                  "Next Prayer: ${nextPrayer.$1}",
+                  '${"nextPrayer".tr()} ${nextPrayer.$1}',
                   style: TextStyle(color: AppColors.white),
                 )
               ],
@@ -79,7 +83,7 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
               ),
               child: Text(
                 nextPrayer.$3,
-                style: TextStyle(color: AppColors.primaryColor),
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             )
           ],
@@ -89,15 +93,15 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
           height: 4,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: AppColors.greenColor,
+            color: Theme.of(context).colorScheme.onPrimary,
             borderRadius: BorderRadius.circular(8),
           ),
           child: FractionallySizedBox(
-            widthFactor: nextPrayer.$4, // Using the progress value
-            alignment: Alignment.centerLeft,
+            widthFactor: 1.0 - nextPrayer.$4, // Reverse the progress value
+            alignment: AlignmentDirectional.centerStart,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 borderRadius: BorderRadius.circular(8),
               ),
             ),

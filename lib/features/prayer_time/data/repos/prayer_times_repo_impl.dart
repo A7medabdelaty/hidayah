@@ -20,7 +20,7 @@ class PrayerTimesRepoImpl implements PrayerTimesRepo {
     this.defaultCity = 'cairo',
     this.defaultCountry = 'eg',
     this.defaultMethod = '5',
-    this.defaultTune = '0,0,0,0,2,2,0,1,0',
+    this.defaultTune = '0,-1,1,1,2,1,1,2,0',
   });
 
   @override

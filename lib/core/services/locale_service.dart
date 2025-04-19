@@ -7,15 +7,13 @@ import '../utils/app_shared_preferences.dart';
 class LocaleService {
   LocaleService();
 
-  static const _defaultLocale = Locale('en');
-
   /// Load saved locale or fallback
   Locale getCurrentLocale() {
     final localeCode = AppPreferences().getData(AppConstants.localeKey);
     if (localeCode != null) {
       return Locale(localeCode);
     }
-    return _defaultLocale;
+    return Locale(Intl.systemLocale.split('_')[0]);
   }
 
   /// Save locale and update easy_localization

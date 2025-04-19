@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:hidayah/core/constants/app_colors.dart';
 
 class PrayerTimeRow extends StatelessWidget {
   final IconData icon;
@@ -22,8 +21,8 @@ class PrayerTimeRow extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: index % 2 == 0
-          ? AppColors.foregroundColor
-          : AppColors.superLightGreenColor,
+          ? Theme.of(context).colorScheme.surface
+          : Theme.of(context).colorScheme.onSurface,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(

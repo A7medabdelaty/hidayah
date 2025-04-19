@@ -1,27 +1,34 @@
 class PrayerTimeCalculator {
+  static const Map<String, String> _prayerNamesAr = {
+    'Fajr': 'الفجر',
+    'Sunrise': 'الشروق',
+    'Dhuhr': 'الظهر',
+    'Asr': 'العصر',
+    'Maghrib': 'المغرب',
+    'Isha': 'العشاء',
+  };
+
   static (String name, String time, String remainingTime, double progress)
-      getNextPrayer(Map<String, String> timings) {
+      getNextPrayer(Map<String, String> timings, {required String locale}) {
     final now = DateTime.now();
+    // Order prayers in chronological sequence
     final prayers = [
-      ('Isha', timings['Isha'] ?? '00:00'),
-      ('Fajr', timings['Fajr'] ?? '00:00'),
-      ('Sunrise', timings['Sunrise'] ?? '00:00'),
-      ('Dhuhr', timings['Dhuhr'] ?? '00:00'),
-      ('Asr', timings['Asr'] ?? '00:00'),
-      ('Maghrib', timings['Maghrib'] ?? '00:00'),
+      ('Fajr', timings['Fajr'] ?? '00:00', _prayerNamesAr['Fajr']!),
+      ('Sunrise', timings['Sunrise'] ?? '00:00', _prayerNamesAr['Sunrise']!),
+      ('Dhuhr', timings['Dhuhr'] ?? '00:00', _prayerNamesAr['Dhuhr']!),
+      ('Asr', timings['Asr'] ?? '00:00', _prayerNamesAr['Asr']!),
+      ('Maghrib', timings['Maghrib'] ?? '00:00', _prayerNamesAr['Maghrib']!),
+      ('Isha', timings['Isha'] ?? '00:00', _prayerNamesAr['Isha']!),
     ];
 
-    // Convert current prayer times to DateTime objects
+    // Convert all prayer times to DateTime objects
     final prayerTimes = prayers.map((prayer) {
       final time = _convertToDateTime(prayer.$2);
-      if (prayer.$1 == 'Fajr' || prayer.$1 == 'Sunrise') {
-        // If current time is after Isha, these prayers are for next day
-        final ishaTime = _convertToDateTime(prayers[0].$2);
-        if (now.isAfter(ishaTime)) {
-          return (prayer.$1, time.add(const Duration(days: 1)));
-        }
+      // If current time is after Isha and we're looking at next day's prayers
+      if (now.isAfter(_convertToDateTime(prayers.last.$2))) {
+        return (prayer.$1, time, prayer.$3);
       }
-      return (prayer.$1, time);
+      return (prayer.$1, time, prayer.$3);
     }).toList();
 
     // Find next prayer
@@ -34,9 +41,8 @@ class PrayerTimeCalculator {
             nextPrayer.$2.difference(currentPrayer.$2).inMinutes;
         final elapsedDuration = now.difference(currentPrayer.$2).inMinutes;
         final progress = 1.0 - (elapsedDuration / totalDuration);
-
         return (
-          nextPrayer.$1,
+          locale == 'ar' ? prayers[i].$3 : prayers[i].$1,
           prayers[i].$2,
           _formatDuration(nextPrayer.$2.difference(now)),
           progress.clamp(0.0, 1.0)
@@ -52,9 +58,8 @@ class PrayerTimeCalculator {
     final totalDuration = nextFajr.difference(lastIsha).inMinutes;
     final elapsedDuration = now.difference(lastIsha).inMinutes;
     final progress = 1.0 - (elapsedDuration / totalDuration);
-
     return (
-      'Fajr',
+      locale == 'ar' ? _prayerNamesAr['Fajr']! : 'Fajr',
       prayers[1].$2,
       _formatDuration(nextFajr.difference(now)),
       progress.clamp(0.0, 1.0)

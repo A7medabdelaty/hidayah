@@ -89,8 +89,9 @@ class AppPreferences {
 
     // استرجاع بيانات تسجيل الدخول
     if (savedEmail != null) await _prefs.setString('saved_email', savedEmail);
-    if (savedPassword != null)
+    if (savedPassword != null) {
       await _prefs.setString('saved_password', savedPassword);
+    }
     if (rememberMe != null) await _prefs.setBool('remember_me', rememberMe);
   }
 
