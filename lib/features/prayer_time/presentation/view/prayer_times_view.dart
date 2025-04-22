@@ -14,7 +14,7 @@ class PrayerTimesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => PrayerTimesBloc(getIt.get<PrayerTimesRepo>())
-        ..fetchPrayerTimes(city: "cairo", country: 'eg'),
+        ..fetchPrayerTimes(),
       child: BlocBuilder<PrayerTimesBloc, PrayerTimesStates>(
         builder: (context, state) {
           if (state is PrayerTimesLoading) {

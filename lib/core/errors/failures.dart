@@ -12,4 +12,7 @@ class ServerFailure extends Failure {
 class CacheFailure extends Failure {
   CacheFailure([super.errMessage = 'Cache Error', super.statusCode = 500]);
 }
-// Add more failures as needed
+
+class LocationFailure extends Failure {
+  LocationFailure(super.errMessage);
+}

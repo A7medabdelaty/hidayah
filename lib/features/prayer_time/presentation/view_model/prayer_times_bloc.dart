@@ -9,11 +9,10 @@ class PrayerTimesBloc extends Cubit<PrayerTimesStates> {
 
   static PrayerTimesBloc get(context) => BlocProvider.of(context);
 
-  Future<void> fetchPrayerTimes(
-      {required String city, required String country}) async {
+  Future<void> fetchPrayerTimes({double? latitude, double? longitude}) async {
     emit(PrayerTimesLoading());
     prayerTimesRepo
-        .fetchPrayerTimes(city: city, country: country)
+        .fetchPrayerTimes(latitude: latitude, longitude: longitude)
         .then((value) {
       value.fold((l) => emit(PrayerTimesError(l.errMessage)),
           (r) => emit(PrayerTimesSuccess(r)));

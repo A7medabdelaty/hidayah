@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hidayah/core/constants/endpoint_constants.dart';
 import 'package:hidayah/core/errors/api_failures.dart';
 import 'package:hidayah/core/errors/failures.dart';
@@ -10,37 +11,51 @@ import 'package:intl/intl.dart';
 
 class PrayerTimesRepoImpl implements PrayerTimesRepo {
   final ApiConsumer apiConsumer;
-  final String defaultCity;
-  final String defaultCountry;
   final String defaultMethod;
   final String defaultTune;
 
   PrayerTimesRepoImpl({
     required this.apiConsumer,
-    this.defaultCity = 'cairo',
-    this.defaultCountry = 'eg',
     this.defaultMethod = '5',
-    this.defaultTune = '0,-1,1,1,2,1,1,2,0',
+    this.defaultTune = '0,0,0,0,0,0,0,0,0',
   });
+
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw LocationServiceDisabledException();
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        throw 'Location permission denied';
+      }
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
 
   @override
   Future<Either<Failure, PrayerTimesModel>> fetchPrayerTimes({
-    required String city,
-    required String country,
+    double? latitude,
+    double? longitude,
     DateTime? date,
   }) async {
     try {
-      if (city.isEmpty || country.isEmpty) {
-        return Left(ApiFailure('City and country cannot be empty'));
-      }
+      final position = latitude == null || longitude == null
+          ? await _getCurrentLocation()
+          : null;
+
       final targetDate = date ?? DateTime.now();
       final formattedDate = DateFormat('dd-MM-yyyy').format(targetDate);
 
       final response = await apiConsumer.get(
         '${EndpointConstants.prayerTimesEndpoint}/$formattedDate',
         queryParameters: {
-          'city': city,
-          'country': country,
+          'latitude': (latitude ?? position?.latitude).toString(),
+          'longitude': (longitude ?? position?.longitude).toString(),
           'tune': defaultTune,
           'method': defaultMethod,
         },
@@ -51,10 +66,10 @@ class PrayerTimesRepoImpl implements PrayerTimesRepo {
       }
 
       return Right(PrayerTimesModel.fromJson(response));
+    } on LocationServiceDisabledException {
+      return Left(ApiFailure('Location services are disabled'));
     } on DioException catch (dioException) {
       return Left(ApiFailure.fromDioException(dioException));
-    } on FormatException catch (e) {
-      return Left(ApiFailure('Invalid data format: ${e.message}'));
     } catch (e) {
       return Left(ApiFailure('Unexpected error: ${e.toString()}'));
     }

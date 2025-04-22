@@ -21,6 +21,7 @@ class AppTheme {
         onError: Colors.white,
         surface: AppColors.foregroundColor,
         onSurface: AppColors.onForegroundColor,
+        primaryContainer: AppColors.darkBackgroundColor,
       ),
       appBarTheme: AppBarTheme(
         elevation: 2,
@@ -37,6 +38,7 @@ class AppTheme {
       ),
       textTheme: TextTheme(
         displayLarge: textStyle(24.sp, FontWeight.bold, AppColors.black),
+        titleLarge: textStyle(26.sp, FontWeight.bold, Colors.black),
         displayMedium: textStyle(20.sp, FontWeight.bold, AppColors.black),
         displaySmall: textStyle(18.sp, FontWeight.w600, AppColors.black),
         headlineMedium: textStyle(16.sp, FontWeight.bold, AppColors.black),
@@ -81,6 +83,7 @@ class AppTheme {
         onError: Colors.white,
         surface: AppColors.darkForegroundColor,
         onSurface: AppColors.darkOnForegroundColor,
+        primaryContainer: AppColors.backgroundColor,
       ),
       appBarTheme: const AppBarTheme(
         elevation: 0,
@@ -95,6 +98,7 @@ class AppTheme {
       ),
       textTheme: TextTheme(
         displayLarge: textStyle(24.sp, FontWeight.bold, Colors.white),
+        titleLarge: textStyle(26.sp, FontWeight.bold, Colors.white),
         displayMedium: textStyle(20.sp, FontWeight.bold, Colors.white),
         displaySmall: textStyle(18.sp, FontWeight.w600, Colors.white),
         headlineMedium: textStyle(16.sp, FontWeight.bold, Colors.white),

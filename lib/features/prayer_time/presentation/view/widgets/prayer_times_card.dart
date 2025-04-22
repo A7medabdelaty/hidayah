@@ -1,13 +1,19 @@
 import 'package:easy_localization/easy_localization.dart'
     show StringTranslateExtension;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hidayah/core/constants/app_colors.dart';
+import 'package:hidayah/core/network/api_consumer.dart';
 import 'package:hidayah/core/services/locale_service.dart';
+import 'package:hidayah/core/services/service_loctor.dart';
 import 'package:hidayah/features/prayer_time/data/models/prayer_times_model.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/next_prayer_indicator.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/prayer_location_header.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/prayer_times_list.dart';
+import 'package:hidayah/features/qibla/data/repositories/qibla_repo_impl.dart';
+import 'package:hidayah/features/qibla/presentation/cubit/qibla_cubit.dart';
+import 'package:hidayah/features/qibla/presentation/view/qibla_view.dart';
 
 class PrayerTimesCard extends StatelessWidget {
   final PrayerTimesModel prayerTimesModel;
@@ -54,7 +60,18 @@ class PrayerTimesCard extends StatelessWidget {
                     bottomLeft: Radius.circular(16),
                     bottomRight: Radius.circular(16))),
             child: TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => QiblaCubit(
+                            qiblaRepository: QiblaRepoImpl(
+                                apiConsumer: getIt.get<ApiConsumer>())),
+                        child: QiblaView(),
+                      ),
+                    ));
+              },
               child: Text(
                 "viewQiblaDirection".tr(),
                 style: TextStyle(color: AppColors.primaryColor),
