@@ -8,6 +8,26 @@ import 'package:hidayah/core/services/base_service.dart';
 class LocationService extends BaseService {
   const LocationService();
 
+  Future<LocationData> getCurrentLocation() async {
+    final position = await getCurrentPosition();
+    return getLocationData(
+      LatLng(position.latitude, position.longitude),
+    );
+  }
+
+  Future<LocationData> getLocationData(LatLng location) async {
+    final address = await _getFormattedAddress(location);
+    return LocationData(latLng: location, address: address);
+  }
+
+  Future<Position> getCurrentPosition() async {
+    final hasPermission = await checkPermissions();
+    if (!hasPermission) {
+      throw LocationException('Location permission denied');
+    }
+    return Geolocator.getCurrentPosition();
+  }
+
   Position createPosition(double latitude, double longitude) {
     return Position(
       latitude: latitude,
@@ -38,27 +58,7 @@ class LocationService extends BaseService {
         permission != LocationPermission.deniedForever;
   }
 
-  Future<Position> getCurrentPosition() async {
-    final hasPermission = await checkPermissions();
-    if (!hasPermission) {
-      throw LocationException('Location permission denied');
-    }
-    return Geolocator.getCurrentPosition();
-  }
-
-  Future<LocationData> getCurrentLocation() async {
-    final position = await getCurrentPosition();
-    return getLocationData(
-      LatLng(position.latitude, position.longitude),
-    );
-  }
-
-  Future<LocationData> getLocationData(LatLng location) async {
-    final address = await getFormattedAddress(location);
-    return LocationData(latLng: location, address: address);
-  }
-
-  static Future<String> getFormattedAddress(LatLng location) async {
+  Future<String> _getFormattedAddress(LatLng location) async {
     try {
       final placemarks = await placemarkFromCoordinates(
         location.latitude,
@@ -70,7 +70,7 @@ class LocationService extends BaseService {
     }
   }
 
-  static String _formatAddress(List<Placemark> placemarks) {
+  String _formatAddress(List<Placemark> placemarks) {
     if (placemarks.isEmpty) return 'Unknown Location';
 
     final place = placemarks.first;
@@ -84,7 +84,7 @@ class LocationService extends BaseService {
     return components.join(', ');
   }
 
-  static String? _cleanGovernorate(String? area) {
+  String? _cleanGovernorate(String? area) {
     return area?.replaceAll('Governorate', '').trim();
   }
 }
