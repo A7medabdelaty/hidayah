@@ -3,9 +3,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hidayah/core/exceptions/location_exception.dart';
 import 'package:hidayah/core/models/location_data.dart';
-import 'package:hidayah/core/services/base_service.dart';
 
-class LocationService extends BaseService {
+class LocationService {
   const LocationService();
 
   Future<LocationData> getCurrentLocation() async {
