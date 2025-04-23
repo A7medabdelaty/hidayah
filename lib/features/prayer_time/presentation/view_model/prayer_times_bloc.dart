@@ -7,8 +7,12 @@ import 'package:hidayah/features/prayer_time/presentation/view_model/prayer_time
 
 class PrayerTimesBloc extends Cubit<PrayerTimesStates> {
   final PrayerTimesRepo prayerTimesRepo;
+  final LocationService locationService;
 
-  PrayerTimesBloc(this.prayerTimesRepo) : super(PrayerTimesInitial());
+  PrayerTimesBloc({
+    required this.prayerTimesRepo,
+    required this.locationService,
+  }) : super(PrayerTimesInitial());
 
   Future<void> fetchPrayerTimes({
     double? latitude,
@@ -21,13 +25,13 @@ class PrayerTimesBloc extends Cubit<PrayerTimesStates> {
       String locationAddress;
 
       if (latitude != null && longitude != null) {
-        position = LocationService.createPosition(latitude, longitude);
+        position = locationService.createPosition(latitude, longitude);
         locationAddress = address ??
             await LocationService.getFormattedAddress(
               LatLng(latitude, longitude),
             );
       } else {
-        position = await Geolocator.getCurrentPosition();
+        position = await locationService.getCurrentPosition();
         locationAddress = await LocationService.getFormattedAddress(
           LatLng(position.latitude, position.longitude),
         );

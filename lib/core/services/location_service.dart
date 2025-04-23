@@ -1,52 +1,56 @@
-import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hidayah/core/exceptions/location_exception.dart';
+import 'package:hidayah/core/models/location_data.dart';
+import 'package:hidayah/core/services/base_service.dart';
 
-class LocationData {
-  final LatLng latLng;
-  final String address;
+class LocationService extends BaseService {
+  const LocationService();
 
-  LocationData({required this.latLng, required this.address});
-}
-
-class LocationService {
-  Future<LocationData> getCurrentLocation() async {
-    final position = await Geolocator.getCurrentPosition();
-    final latLng = LatLng(position.latitude, position.longitude);
-    return getLocationData(latLng);
+  Position createPosition(double latitude, double longitude) {
+    return Position(
+      latitude: latitude,
+      longitude: longitude,
+      timestamp: DateTime.now(),
+      accuracy: 0,
+      altitude: 0,
+      heading: 0,
+      speed: 0,
+      speedAccuracy: 0,
+      altitudeAccuracy: 0,
+      headingAccuracy: 0,
+    );
   }
 
-  static Future<String> getFormattedAddress(LatLng location) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-        location.latitude,
-        location.longitude,
-      );
-      if (placemarks.isNotEmpty) {
-        return _formatPlacemarkToAddress(placemarks.first);
-      }
-    } catch (e) {
-      debugPrint('Error getting address: $e');
+  Future<bool> checkPermissions() async {
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      return await requestPermission();
     }
-    return 'Unknown Location';
+    return permission != LocationPermission.denied &&
+        permission != LocationPermission.deniedForever;
   }
 
-  static String _formatPlacemarkToAddress(Placemark place) {
-    final addressComponents = [
-      place.locality,
-      place.subAdministrativeArea,
-      _cleanGovernorate(place.administrativeArea),
-      place.country,
-    ];
-
-    return addressComponents
-        .where((component) => component != null && component.isNotEmpty)
-        .join(', ');
+  Future<bool> requestPermission() async {
+    final permission = await Geolocator.requestPermission();
+    return permission != LocationPermission.denied &&
+        permission != LocationPermission.deniedForever;
   }
 
-  static String? _cleanGovernorate(String? area) {
-    return area?.replaceAll(RegExp(r'Governorate'), '').trim();
+  Future<Position> getCurrentPosition() async {
+    final hasPermission = await checkPermissions();
+    if (!hasPermission) {
+      throw LocationException('Location permission denied');
+    }
+    return Geolocator.getCurrentPosition();
+  }
+
+  Future<LocationData> getCurrentLocation() async {
+    final position = await getCurrentPosition();
+    return getLocationData(
+      LatLng(position.latitude, position.longitude),
+    );
   }
 
   Future<LocationData> getLocationData(LatLng location) async {
@@ -54,18 +58,33 @@ class LocationService {
     return LocationData(latLng: location, address: address);
   }
 
-  static Position createPosition(double latitude, double longitude) {
-    return Position(
-      latitude: latitude,
-      longitude: longitude,
-      timestamp: DateTime.now(),
-      altitudeAccuracy: 0,
-      accuracy: 0,
-      altitude: 0,
-      heading: 0,
-      speed: 0,
-      speedAccuracy: 0,
-      headingAccuracy: 0,
-    );
+  static Future<String> getFormattedAddress(LatLng location) async {
+    try {
+      final placemarks = await placemarkFromCoordinates(
+        location.latitude,
+        location.longitude,
+      );
+      return _formatAddress(placemarks);
+    } catch (e) {
+      throw LocationException('Failed to get address: $e');
+    }
+  }
+
+  static String _formatAddress(List<Placemark> placemarks) {
+    if (placemarks.isEmpty) return 'Unknown Location';
+
+    final place = placemarks.first;
+    final components = [
+      place.locality,
+      place.subAdministrativeArea,
+      _cleanGovernorate(place.administrativeArea),
+      place.country,
+    ].where((component) => component?.isNotEmpty ?? false);
+
+    return components.join(', ');
+  }
+
+  static String? _cleanGovernorate(String? area) {
+    return area?.replaceAll('Governorate', '').trim();
   }
 }

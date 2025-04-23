@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hidayah/core/models/location_data.dart';
 import 'package:hidayah/core/services/location_service.dart';
 
 class LocationPickerMap extends StatefulWidget {

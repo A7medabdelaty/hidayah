@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hidayah/core/constants/app_colors.dart';
 import 'package:hidayah/core/network/api_consumer.dart';
 import 'package:hidayah/core/services/locale_service.dart';
-import 'package:hidayah/core/services/service_loctor.dart';
+import 'package:hidayah/core/services/service_locator.dart';
 import 'package:hidayah/features/prayer_time/data/models/prayer_times_model.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/location_picker_map.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/next_prayer_indicator.dart';

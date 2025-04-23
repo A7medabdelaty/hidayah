@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hidayah/core/services/service_loctor.dart';
+import 'package:hidayah/core/services/service_locator.dart';
 import 'package:hidayah/core/utils/location_helper.dart';
-import 'package:hidayah/features/prayer_time/data/repos/preayer_times_repo.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/prayer_times_card.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/prayer_times_header.dart';
 import 'package:hidayah/features/prayer_time/presentation/view_model/prayer_times_bloc.dart';
@@ -15,7 +14,7 @@ class PrayerTimesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final bloc = PrayerTimesBloc(getIt.get<PrayerTimesRepo>());
+        final bloc = getIt<PrayerTimesBloc>();
         _initializeLocation(context, bloc);
         return bloc;
       },
