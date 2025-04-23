@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hidayah/core/services/service_loctor.dart';
+import 'package:hidayah/core/utils/location_helper.dart';
 import 'package:hidayah/features/prayer_time/data/repos/preayer_times_repo.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/prayer_times_card.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/prayer_times_header.dart';
@@ -13,12 +14,17 @@ class PrayerTimesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PrayerTimesBloc(getIt.get<PrayerTimesRepo>())
-        ..fetchPrayerTimes(),
+      create: (context) {
+        final bloc = PrayerTimesBloc(getIt.get<PrayerTimesRepo>());
+        _initializeLocation(context, bloc);
+        return bloc;
+      },
       child: BlocBuilder<PrayerTimesBloc, PrayerTimesStates>(
         builder: (context, state) {
           if (state is PrayerTimesLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
           } else if (state is PrayerTimesSuccess) {
             return Scaffold(
               body: Padding(
@@ -26,7 +32,13 @@ class PrayerTimesView extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const PrayerTimesHeader(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const PrayerTimesHeader(),
+                        // Remove the location button from here
+                      ],
+                    ),
                     Expanded(
                       child: PrayerTimesCard(
                         prayerTimesModel: state.prayerTimesModel,
@@ -43,5 +55,14 @@ class PrayerTimesView extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _initializeLocation(
+      BuildContext context, PrayerTimesBloc bloc) async {
+    final hasPermission =
+        await LocationHelper.handleLocationPermission(context);
+    if (hasPermission) {
+      bloc.fetchPrayerTimes();
+    }
   }
 }

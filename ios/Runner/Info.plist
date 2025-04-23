@@ -21,7 +21,11 @@
 		<key>CFBundleSignature</key>
 		<string>????</string>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>This app needs access to location to show Qibla direction.</string>
+		<string>This app needs access to location when open to show prayer times for your location.</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>This app needs access to location when in the background to update prayer times.</string>
+		<key>io.flutter.embedded_views_preview</key>
+		<true />
 		<key>CFBundleVersion</key>
 		<string>$(FLUTTER_BUILD_NUMBER)</string>
 		<key>LSRequiresIPhoneOS</key>

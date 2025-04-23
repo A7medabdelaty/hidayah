@@ -18,7 +18,8 @@ class NextPrayerIndicator extends StatefulWidget {
 }
 
 class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
-  late Timer _timer;
+  Timer? _timer;
+  bool _disposed = false; // Add flag to track disposal
   late var nextPrayer = PrayerTimeCalculator.getNextPrayer(
     widget.prayerTimesModel.data.timings.toJson(),
     locale: LocaleService().getCurrentLocale().languageCode,
@@ -27,23 +28,38 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
   @override
   void initState() {
     super.initState();
-    // Initial update
     _updateNextPrayer();
-    // Calculate seconds until next minute
+    _startTimer();
+  }
+
+  @override
+  void didUpdateWidget(NextPrayerIndicator oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.prayerTimesModel != widget.prayerTimesModel) {
+      _updateNextPrayer();
+    }
+  }
+
+  void _startTimer() {
     final now = DateTime.now();
     final secondsUntilNextMinute = 60 - now.second;
 
-    // Initial delay to sync with minute
     Future.delayed(Duration(seconds: secondsUntilNextMinute), () {
-      _updateNextPrayer();
-      // Then start periodic updates every minute
-      _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      if (!_disposed) {
+        // Check if widget is still mounted
         _updateNextPrayer();
-      });
+        _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+          if (!_disposed) {
+            // Check before updating
+            _updateNextPrayer();
+          }
+        });
+      }
     });
   }
 
   void _updateNextPrayer() {
+    if (!mounted) return; // Additional safety check
     setState(() {
       nextPrayer = PrayerTimeCalculator.getNextPrayer(
         widget.prayerTimesModel.data.timings.toJson(),
@@ -54,7 +70,8 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    _disposed = true; // Set flag before canceling timer
+    _timer?.cancel();
     super.dispose();
   }
 

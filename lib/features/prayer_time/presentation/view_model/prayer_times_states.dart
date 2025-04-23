@@ -8,8 +8,9 @@ class PrayerTimesLoading extends PrayerTimesStates {}
 
 class PrayerTimesSuccess extends PrayerTimesStates {
   final PrayerTimesModel prayerTimesModel;
+  final String locationAddress;
 
-  PrayerTimesSuccess(this.prayerTimesModel);
+  PrayerTimesSuccess(this.prayerTimesModel, [this.locationAddress = '']);
 }
 
 class PrayerTimesError extends PrayerTimesStates {
