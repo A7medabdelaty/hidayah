@@ -23,9 +23,8 @@ class PrayerTimesBloc extends Cubit<PrayerTimesStates> {
     try {
       final LocationData location;
       if (latitude != null && longitude != null) {
-        final position = locationService.createPosition(latitude, longitude);
         location = await locationService.getLocationData(
-          LatLng(position.latitude, position.longitude),
+          LatLng(latitude, longitude),
         );
       } else {
         location = await locationService.getCurrentLocation();

@@ -1,7 +1,7 @@
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hidayah/core/exceptions/location_exception.dart';
+import 'package:hidayah/core/errors/failures.dart';
 import 'package:hidayah/core/models/location_data.dart';
 
 class LocationService {
@@ -22,24 +22,9 @@ class LocationService {
   Future<Position> getCurrentPosition() async {
     final hasPermission = await checkPermissions();
     if (!hasPermission) {
-      throw LocationException('Location permission denied');
+      throw LocationFailure('Location permission denied');
     }
     return Geolocator.getCurrentPosition();
-  }
-
-  Position createPosition(double latitude, double longitude) {
-    return Position(
-      latitude: latitude,
-      longitude: longitude,
-      timestamp: DateTime.now(),
-      accuracy: 0,
-      altitude: 0,
-      heading: 0,
-      speed: 0,
-      speedAccuracy: 0,
-      altitudeAccuracy: 0,
-      headingAccuracy: 0,
-    );
   }
 
   Future<bool> checkPermissions() async {
@@ -65,7 +50,7 @@ class LocationService {
       );
       return _formatAddress(placemarks);
     } catch (e) {
-      throw LocationException('Failed to get address: $e');
+      throw LocationFailure('Failed to get address: $e');
     }
   }
 
