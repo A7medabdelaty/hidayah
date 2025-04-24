@@ -10,8 +10,9 @@ import 'package:hidayah/core/routing/app_router.dart';
 import 'package:hidayah/core/services/service_locator.dart';
 
 void main() {
-  setUp(() {
+  setUpAll(() async {
     setupServiceLocator();
+    await EasyLocalization.ensureInitialized();
   });
 
   testWidgets('App smoke test', (WidgetTester tester) async {
@@ -20,6 +21,7 @@ void main() {
         supportedLocales: AppConstants.supportedLocales,
         path: 'assets/lang',
         fallbackLocale: const Locale('en'),
+        startLocale: const Locale('en'), // Add this line
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => LocaleCubit()),
