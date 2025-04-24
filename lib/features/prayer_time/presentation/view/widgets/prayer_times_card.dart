@@ -97,7 +97,6 @@ class PrayerTimesCard extends StatelessWidget {
                           bloc.fetchPrayerTimes(
                             latitude: locationData.latLng.latitude,
                             longitude: locationData.latLng.longitude,
-                            address: locationData.address,
                           );
                         },
                       ),

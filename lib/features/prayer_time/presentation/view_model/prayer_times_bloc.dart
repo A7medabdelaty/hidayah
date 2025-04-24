@@ -17,7 +17,6 @@ class PrayerTimesBloc extends Cubit<PrayerTimesStates> {
   Future<void> fetchPrayerTimes({
     double? latitude,
     double? longitude,
-    String? address,
   }) async {
     emit(PrayerTimesLoading());
     try {

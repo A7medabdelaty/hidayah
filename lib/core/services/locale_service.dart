@@ -19,6 +19,6 @@ class LocaleService {
   /// Save locale and update easy_localization
   Future<void> setLocale(BuildContext context, String languageCode) async {
     await AppPreferences().setData(AppConstants.localeKey, languageCode);
-    await context.setLocale(Locale(languageCode));
+    if (context.mounted) await context.setLocale(Locale(languageCode));
   }
 }

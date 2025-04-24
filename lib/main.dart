@@ -5,7 +5,6 @@ import 'package:hidayah/core/services/locale_service.dart';
 import 'package:hidayah/core/services/service_locator.dart';
 
 import 'app.dart';
-import 'app_bloc_observer.dart';
 import 'core/constants/app_constants.dart';
 import 'core/cubit/locale/locale_cubit.dart';
 import 'core/cubit/theme/theme_cubit.dart';
@@ -16,7 +15,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupServiceLocator();
   await EasyLocalization.ensureInitialized();
-  Bloc.observer = AppBlocObserver();
+  // Bloc.observer = AppBlocObserver();
   await AppPreferences().init();
 
   // Get the device's language code (e.g. 'en' from 'en_US')
