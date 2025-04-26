@@ -18,26 +18,21 @@ class PrayerTimesBloc extends Cubit<PrayerTimesStates> {
     double? latitude,
     double? longitude,
   }) async {
+    if (state is PrayerTimesLoading) return; // Prevent multiple simultaneous requests
+
     emit(PrayerTimesLoading());
     try {
-      final LocationData location;
-      if (latitude != null && longitude != null) {
-        location = await locationService.getLocationData(
-          LatLng(latitude, longitude),
-        );
-      } else {
-        location = await locationService.getCurrentLocation();
-      }
+      final LocationData location = await (latitude != null && longitude != null
+          ? locationService.getLocationData(LatLng(latitude, longitude))
+          : locationService.getCurrentLocation());
 
       final result = await prayerTimesRepo.fetchPrayerTimes(
         latitude: location.latLng.latitude,
         longitude: location.latLng.longitude,
       );
-
       result.fold(
         (failure) => emit(PrayerTimesError(failure.errMessage)),
-        (prayerTimes) =>
-            emit(PrayerTimesSuccess(prayerTimes, location.address)),
+        (prayerTimes) => emit(PrayerTimesSuccess(prayerTimes, location.address)),
       );
     } catch (e) {
       emit(PrayerTimesError(e.toString()));

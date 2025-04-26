@@ -40,6 +40,13 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
     }
   }
 
+  @override
+  void dispose() {
+    _timer?.cancel();
+    _disposed = true;
+    super.dispose();
+  }
+
   void _startTimer() {
     final now = DateTime.now();
     final secondsUntilNextMinute = 60 - now.second;
@@ -48,11 +55,12 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
       if (!_disposed) {
         // Check if widget is still mounted
         _updateNextPrayer();
-        _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
-          if (!_disposed) {
-            // Check before updating
-            _updateNextPrayer();
+        _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+          if (_disposed) {
+            timer.cancel();
+            return;
           }
+          _updateNextPrayer();
         });
       }
     });
@@ -66,13 +74,6 @@ class _NextPrayerIndicatorState extends State<NextPrayerIndicator> {
         locale: LocaleService().getCurrentLocale().languageCode,
       );
     });
-  }
-
-  @override
-  void dispose() {
-    _disposed = true; // Set flag before canceling timer
-    _timer?.cancel();
-    super.dispose();
   }
 
   @override
