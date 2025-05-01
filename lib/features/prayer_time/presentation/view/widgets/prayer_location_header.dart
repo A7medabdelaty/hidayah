@@ -32,7 +32,7 @@ class PrayerLocationHeader extends StatelessWidget {
             Expanded(
               child: Text(
                 state is PrayerTimesSuccess
-                    ? state.locationAddress
+                    ? state.address
                     : "Getting location...",
                 style: const TextStyle(
                   color: Colors.white,

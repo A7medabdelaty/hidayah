@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hidayah/core/services/navigation_service.dart';
 import 'package:hidayah/core/services/theme_service.dart';
 
 import 'core/constants/app_constants.dart';
@@ -17,6 +18,7 @@ class HidayahApp extends StatelessWidget {
     return ScreenUtilInit(
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) => MaterialApp(
+          navigatorKey: NavigationService.navigatorKey,
           debugShowCheckedModeBanner: false,
           title: AppConstants.appName,
           theme: AppTheme.lightTheme,

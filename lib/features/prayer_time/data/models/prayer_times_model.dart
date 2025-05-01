@@ -16,6 +16,14 @@ class PrayerTimesModel {
       data: PrayerTimesData.fromJson(json['data']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'code': code,
+      'status': status,
+      'data': data.toJson(),
+    };
+  }
 }
 
 class PrayerTimesData {
@@ -35,6 +43,14 @@ class PrayerTimesData {
       date: Date.fromJson(json['date']),
       meta: Meta.fromJson(json['meta']),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'timings': timings.toJson(),
+      'date': date.toJson(),
+      'meta': meta.toJson(),
+    };
   }
 }
 
@@ -119,6 +135,15 @@ class Date {
       gregorian: Gregorian.fromJson(json['gregorian']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'readable': readable,
+      'timestamp': timestamp,
+      'hijri': hijri.toJson(),
+      'gregorian': gregorian.toJson(),
+    };
+  }
 }
 
 class Hijri {
@@ -160,6 +185,21 @@ class Hijri {
       method: json['method'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date,
+      'format': format,
+      'day': day,
+      'weekday': weekday.toJson(),
+      'month': month.toJson(),
+      'year': year,
+      'designation': designation.toJson(),
+      'holidays': holidays,
+      'adjustedHolidays': adjustedHolidays,
+      'method': method,
+    };
+  }
 }
 
 class Gregorian {
@@ -195,6 +235,19 @@ class Gregorian {
       lunarSighting: json['lunarSighting'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date,
+      'format': format,
+      'day': day,
+      'weekday': weekday.toJson(),
+      'month': month.toJson(),
+      'year': year,
+      'designation': designation.toJson(),
+      'lunarSighting': lunarSighting,
+    };
+  }
 }
 
 class WeekDay {
@@ -211,6 +264,13 @@ class WeekDay {
       en: json['en'],
       ar: json['ar'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'en': en,
+      'ar': ar,
+    };
   }
 }
 
@@ -235,6 +295,15 @@ class Month {
       days: json['days'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'number': number,
+      'en': en,
+      'ar': ar,
+      'days': days,
+    };
+  }
 }
 
 class Designation {
@@ -251,6 +320,13 @@ class Designation {
       abbreviated: json['abbreviated'],
       expanded: json['expanded'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'abbreviated': abbreviated,
+      'expanded': expanded,
+    };
   }
 }
 
@@ -284,6 +360,18 @@ class Meta {
       school: json['school'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+      'timezone': timezone,
+      'method': method.toJson(),
+      'latitudeAdjustmentMethod': latitudeAdjustmentMethod,
+      'midnightMode': midnightMode,
+      'school': school,
+    };
+  }
 }
 
 class Method {
@@ -307,6 +395,15 @@ class Method {
       location: Location.fromJson(json['location']),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'params': params.toJson(),
+      'location': location.toJson(),
+    };
+  }
 }
 
 class Params {
@@ -324,6 +421,13 @@ class Params {
       isha: json['Isha'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'Fajr': fajr,
+      'Isha': isha,
+    };
+  }
 }
 
 class Location {
@@ -340,5 +444,12 @@ class Location {
       latitude: json['latitude'],
       longitude: json['longitude'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'latitude': latitude,
+      'longitude': longitude,
+    };
   }
 }

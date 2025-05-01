@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:hidayah/core/errors/failures.dart';
+import 'package:hidayah/features/prayer_time/data/models/cached_prayer_data.dart';
 import 'package:hidayah/features/prayer_time/data/models/prayer_times_model.dart';
 
 abstract class PrayerTimesRepo {
@@ -8,4 +9,6 @@ abstract class PrayerTimesRepo {
     double? longitude,
     DateTime? date,
   });
+
+  Future<Either<Failure, CachedPrayerData>> getCachedPrayerTimes();
 }

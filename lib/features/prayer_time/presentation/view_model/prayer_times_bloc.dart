@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:hidayah/core/models/location_data.dart';
+import 'package:hidayah/core/errors/api_failures.dart';
 import 'package:hidayah/core/services/location_service.dart';
 import 'package:hidayah/features/prayer_time/data/repos/preayer_times_repo.dart';
 import 'package:hidayah/features/prayer_time/presentation/view_model/prayer_times_states.dart';
@@ -12,30 +13,73 @@ class PrayerTimesBloc extends Cubit<PrayerTimesStates> {
   PrayerTimesBloc({
     required this.prayerTimesRepo,
     required this.locationService,
-  }) : super(PrayerTimesInitial());
+  }) : super(PrayerTimesInitial()) {
+    _loadCachedData();
+  }
 
-  Future<void> fetchPrayerTimes({
-    double? latitude,
-    double? longitude,
-  }) async {
-    if (state is PrayerTimesLoading) return; // Prevent multiple simultaneous requests
+  Future<void> _loadCachedData() async {
+    final result = await prayerTimesRepo.getCachedPrayerTimes();
+    result.fold(
+      (failure) => fetchPrayerTimes(),
+      (cachedData) {
+        emit(PrayerTimesSuccess(
+          cachedData.prayerTimes,
+          cachedData.address,
+          isFromCache: true,
+        ));
+        // Try to fetch fresh data if possible
+        _hasInternetConnection().then((hasInternet) {
+          if (hasInternet) fetchPrayerTimes();
+        });
+      },
+    );
+  }
 
-    emit(PrayerTimesLoading());
+  Future<bool> _hasInternetConnection() async {
     try {
-      final LocationData location = await (latitude != null && longitude != null
-          ? locationService.getLocationData(LatLng(latitude, longitude))
-          : locationService.getCurrentLocation());
-
-      final result = await prayerTimesRepo.fetchPrayerTimes(
-        latitude: location.latLng.latitude,
-        longitude: location.latLng.longitude,
-      );
-      result.fold(
-        (failure) => emit(PrayerTimesError(failure.errMessage)),
-        (prayerTimes) => emit(PrayerTimesSuccess(prayerTimes, location.address)),
-      );
-    } catch (e) {
-      emit(PrayerTimesError(e.toString()));
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
     }
+  }
+
+  Future<void> fetchPrayerTimes({double? latitude, double? longitude}) async {
+    if (state is! PrayerTimesSuccess) {
+      emit(PrayerTimesLoading());
+    }
+
+    final result = await prayerTimesRepo.fetchPrayerTimes(
+      latitude: latitude,
+      longitude: longitude,
+    );
+
+    result.fold(
+      (failure) {
+        if (failure is ApiFailure &&
+            failure.errMessage.contains('No internet')) {
+          if (state is! PrayerTimesSuccess) {
+            emit(PrayerTimesOffline());
+          }
+        } else {
+          if (state is! PrayerTimesSuccess) {
+            emit(PrayerTimesError(failure.errMessage));
+          }
+        }
+      },
+      (prayerTimes) async {
+        final cachedData = await prayerTimesRepo.getCachedPrayerTimes();
+        final address = cachedData.fold(
+          (failure) => 'Unknown location',
+          (data) => data.address,
+        );
+
+        emit(PrayerTimesSuccess(
+          prayerTimes,
+          address,
+          isFromCache: false,
+        ));
+      },
+    );
   }
 }

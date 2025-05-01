@@ -1,22 +1,20 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart'
     show StringTranslateExtension;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:hidayah/core/constants/app_colors.dart';
-import 'package:hidayah/core/network/api_consumer.dart';
 import 'package:hidayah/core/services/locale_service.dart';
-import 'package:hidayah/core/services/service_locator.dart';
+import 'package:hidayah/core/services/navigation_service.dart';
 import 'package:hidayah/features/prayer_time/data/models/prayer_times_model.dart';
-import 'package:hidayah/features/prayer_time/presentation/view/widgets/location_picker_map.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/next_prayer_indicator.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/prayer_location_header.dart';
 import 'package:hidayah/features/prayer_time/presentation/view/widgets/prayer_times_list.dart';
 import 'package:hidayah/features/prayer_time/presentation/view_model/prayer_times_bloc.dart';
 import 'package:hidayah/features/prayer_time/presentation/view_model/prayer_times_states.dart';
-import 'package:hidayah/features/qibla/data/repositories/qibla_repo_impl.dart';
-import 'package:hidayah/features/qibla/presentation/cubit/qibla_cubit.dart';
-import 'package:hidayah/features/qibla/presentation/view/qibla_view.dart';
 
 class PrayerTimesCard extends StatelessWidget {
   final PrayerTimesModel prayerTimesModel;
@@ -65,17 +63,9 @@ class PrayerTimesCard extends StatelessWidget {
                       bottomLeft: Radius.circular(16),
                       bottomRight: Radius.circular(16))),
               child: TextButton(
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider(
-                          create: (context) => QiblaCubit(
-                              qiblaRepository: QiblaRepoImpl(
-                                  apiConsumer: getIt.get<ApiConsumer>())),
-                          child: QiblaView(),
-                        ),
-                      ));
+                onPressed: () async {
+                  if (!await _checkInternetConnection(context)) return;
+                  await NavigationService.pushQiblaView();
                 },
                 child: Text(
                   "viewQiblaDirection".tr(),
@@ -85,23 +75,19 @@ class PrayerTimesCard extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             TextButton.icon(
-              onPressed: () {
+              onPressed: () async {
+                if (!await _checkInternetConnection(context)) return;
+                if (!await _checkLocationPermissions(context)) return;
+
                 final bloc = context.read<PrayerTimesBloc>();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => BlocProvider.value(
-                      value: bloc,
-                      child: LocationPickerMap(
-                        onLocationPicked: (locationData) {
-                          bloc.fetchPrayerTimes(
-                            latitude: locationData.latLng.latitude,
-                            longitude: locationData.latLng.longitude,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                await NavigationService.pushLocationPicker(
+                  bloc,
+                  (locationData) {
+                    bloc.fetchPrayerTimes(
+                      latitude: locationData.latLng.latitude,
+                      longitude: locationData.latLng.longitude,
+                    );
+                  },
                 );
               },
               icon: const Icon(Icons.location_on_outlined, color: Colors.green),
@@ -115,4 +101,72 @@ class PrayerTimesCard extends StatelessWidget {
       );
     });
   }
+}
+
+Future<bool> _checkInternetConnection(BuildContext context) async {
+  try {
+    final result = await InternetAddress.lookup('google.com');
+    if (result.isEmpty || result[0].rawAddress.isEmpty) {
+      if (!context.mounted) return false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please check your internet connection'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+    return true;
+  } catch (e) {
+    if (!context.mounted) return false;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please check your internet connection'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return false;
+  }
+}
+
+Future<bool> _checkLocationPermissions(BuildContext context) async {
+  final locationEnabled = await Geolocator.isLocationServiceEnabled();
+  if (!locationEnabled) {
+    if (!context.mounted) return false;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please enable location services'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return false;
+  }
+
+  final permission = await Geolocator.checkPermission();
+  if (permission == LocationPermission.denied) {
+    final permissionResult = await Geolocator.requestPermission();
+    if (permissionResult == LocationPermission.denied) {
+      if (!context.mounted) return false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Location permission is required'),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    if (!context.mounted) return false;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Please enable location permission from settings'),
+        backgroundColor: Colors.red,
+      ),
+    );
+    return false;
+  }
+
+  return true;
 }
